@@ -1,0 +1,26 @@
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.dark {
+  margin: 0.3rem;
+  width: clamp(45ch, 70ch, 100ch);
+  max-width: 60vw;
+  padding: 0.5rem;
+  background-color: #222c35;
+  color: #f8f8f2;
+}
+
+.light {
+  margin: 0.3rem;
+  width: clamp(45ch, 70ch, 100ch);
+  max-width: 60vw;
+  padding: 0.5rem;
+  background-color: #f6f8fa;
+  color: #31323d;
+}
