@@ -14,7 +14,7 @@ import json.DataResponse
 import org.jetbrains.exposed.sql.selectAll
 
 
-class IncidentController(val repo: Repo) {
+class Controller(val repo: Repo) {
     fun getLatest(ctx: Context) {
         val res = repo.sql {
             Incidents

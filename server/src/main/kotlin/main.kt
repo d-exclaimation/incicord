@@ -6,12 +6,12 @@
 //
 import config.databaseUrl
 import database.Repo
-import incident.IncidentController
+import incident.Controller
 
 fun main() {
     val repo = Repo(url = databaseUrl())
-    val controller = IncidentController(repo = repo)
-    val server = AppServer(
+    val controller = Controller(repo = repo)
+    val server = Service(
         controller = controller
     )
     server.start()

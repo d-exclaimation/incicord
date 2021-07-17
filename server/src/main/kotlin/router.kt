@@ -11,6 +11,6 @@
  * app.get("/") { controller.get(it) }
  * ```
  */
-fun AppServer.router() {
+fun Service.router() {
     app.get( "/") { controller.getLatest(it) }
 }

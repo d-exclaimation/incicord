@@ -4,12 +4,11 @@
 //
 //  Created by d-exclaimation on 8:50 PM.
 //
-import database.Repo
-import incident.IncidentController
+import incident.Controller
 import io.javalin.Javalin
 
 
-class AppServer(val controller: IncidentController) {
+class Service(val controller: Controller) {
     val app: Javalin = Javalin.create()
     private val port: Int = 4000
 
