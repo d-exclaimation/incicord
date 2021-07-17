@@ -7,14 +7,13 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { CTA } from "../components/shared/CTA";
-import { DarkModeSwitch } from "../components/shared/DarkModeSwitch";
 import { Hero } from "../components/shared/Hero";
 import MetaHead from "../components/shared/meta/MetaHead";
+import NavBar from "../components/shared/NavBar";
 import Main from "../components/shared/semantic/Main";
 import pallete from "../constants/pallette";
 import { useResponsive } from "../hooks/useResponsive";
 import { createIncident } from "../models/Incident";
-import { isServer } from "../utils/isServer";
 
 const TEMPLATE_DTO = JSON.stringify(
   createIncident({
@@ -45,16 +44,12 @@ const Index: React.FC = () => {
   const border = (() => `solid ${borderColor} 2px !important`)();
 
   useEffect(() => {
-    console.log(isServer());
     setState("Incident Record");
   }, []);
 
   return (
     <>
-      <Flex justifyContent="space-between" p="1rem">
-        <Text>Home {">"} About</Text>
-        <DarkModeSwitch />
-      </Flex>
+      <NavBar />
       <Main>
         <MetaHead
           title={state}
