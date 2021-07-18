@@ -8,7 +8,9 @@ A Record for my incidents and how long has it been
 
 - Cool
 - Relative time
-- idk, I am too lazy to check and
+- API available
+- Concurrency involved with real life changes
+- idk, I am too lazy to check and you probably see why
 
   
 ## Demo
@@ -21,7 +23,7 @@ Insert gif or link to demo
 #### Get all items
 
 ```http
-  GET /v1/incidents/all?limit={limit}
+  GET /v1/incidents/all?limit=<limit>
 ```
 
 | Parameter | Type     | Description                |
@@ -33,7 +35,7 @@ Insert gif or link to demo
 ```http
   POST /v1/incidents/create
   Header:
-    "X-Authorization-Token" : {api_key}
+    "X-Authorization-Token" : <api_key>
 ```
 
 | Parameter | Type     | Description                       |
