@@ -9,18 +9,31 @@ package database.schema
 import database.Incidents
 import org.jetbrains.exposed.sql.ResultRow
 
+/**
+ * ### Incident Object
+ * Data class for Incident Object
+ *
+ * ```kotlin
+ * val res: List<Incident> = IncidentsTable.selectAll().map { it.data() }
+ * ```
+ */
 data class Incident(
     val id: Int,
     val name: String,
     val lastOccurred: String,
     val severity: String
-)
-
-fun ResultRow.data(): Incident {
-    return Incident(
-        id = this[Incidents.id],
-        name = this[Incidents.name],
-        lastOccurred = this[Incidents.lastOccurred],
-        severity = this[Incidents.severity],
-    )
+) {
+    companion object {
+        /**
+         * Parse result row into Incident Data class
+         */
+        fun parsed(row: ResultRow): Incident =
+            Incident(
+                id = row[Incidents.id],
+                name = row[Incidents.name],
+                lastOccurred = row[Incidents.lastOccurred],
+                severity = row[Incidents.severity],
+            )
+    }
 }
+

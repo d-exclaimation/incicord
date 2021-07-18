@@ -8,6 +8,15 @@ package database
 
 import org.jetbrains.exposed.sql.Table
 
+/**
+ * ### Incidents SQL Table
+ *
+ * Schema:
+ * - id: `integer`
+ * - name: `string` (255)
+ * - lastOccurred: `string` (255) (Timestamp)
+ * - severity: `string` (8)
+ */
 object Incidents : Table() {
     val id = integer("id").autoIncrement()
     val name = varchar("name", 255)

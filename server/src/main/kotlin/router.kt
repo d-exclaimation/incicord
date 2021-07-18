@@ -4,6 +4,7 @@
 //
 //  Created by d-exclaimation on 6:04 AM.
 //
+import io.javalin.apibuilder.ApiBuilder.*
 
 /**
  * Routing declaration and assigning controllers or handlers
@@ -12,5 +13,10 @@
  * ```
  */
 fun Service.router() {
-    app.get( "/") { controller.getLatest(it) }
+    app.routes {
+        path("incident") {
+            get("/all", controller::getLatest)
+            post("/create", controller::createIncident)
+        }
+    }
 }

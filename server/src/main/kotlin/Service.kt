@@ -4,13 +4,18 @@
 //
 //  Created by d-exclaimation on 8:50 PM.
 //
+import config.port
 import incident.Controller
 import io.javalin.Javalin
 
-
+/**
+ * ### Javalin Service
+ *
+ * Holds the Javalin app and the callbacks
+ */
 class Service(val controller: Controller) {
     val app: Javalin = Javalin.create()
-    private val port: Int = 4000
+    private val port: Int = port()
 
     init {
         // Add Simple Event logging
