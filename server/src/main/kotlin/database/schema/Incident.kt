@@ -8,6 +8,10 @@ package database.schema
 
 import database.Incidents
 import org.jetbrains.exposed.sql.ResultRow
+import java.time.LocalDate
+import java.time.Period
+import java.time.ZonedDateTime
+import kotlin.math.roundToInt
 
 /**
  * ### Incident Object
@@ -23,6 +27,29 @@ data class Incident(
     val lastOccurred: String,
     val severity: String
 ) {
+    val info: IncidentInfo
+
+    init {
+        // Computed info on initializer
+        val date = ZonedDateTime.parse(lastOccurred)
+        val diffDays = Period.between(date.toLocalDate(), LocalDate.now())
+        val multiplier: Double = when (severity) {
+            "severe" -> 2.0
+            "mild" -> 1.5
+            "calm" -> 1.1
+            else -> 1.0
+        }
+        info = IncidentInfo(
+            relativeDate = "${diffDays.days} days since last occurred",
+            streakColor = when ((diffDays.days / multiplier).roundToInt()) {
+                in 12 until Int.MAX_VALUE -> "#00FFAE"
+                in 8 until 12 -> "#FFEA00"
+                in 4 until 8 -> "#FCB103"
+                else -> "#FC0356"
+            }
+        )
+    }
+
     companion object {
         /**
          * Parse result row into Incident Data class
@@ -37,3 +64,21 @@ data class Incident(
     }
 }
 
+/**
+ * ### Incident Additional Info
+ * Useful computed info for Incident
+ */
+data class IncidentInfo(
+    val relativeDate: String,
+    val streakColor: String
+)
+
+/**
+ * ### Incident Data Transfer Object
+ * Data class for Input for Incident
+ */
+data class IncidentDTO(
+    val name: String,
+    val lastOccurred: String,
+    var severity: String
+)

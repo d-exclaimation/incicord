@@ -21,13 +21,14 @@ package json
  */
 data class Data<T>(
     val data: T?,
-    val errors: List<String> = listOf()
+    val errors: List<String>? = null
 ) {
     companion object {
 
         /** Create a new successful data response */
         fun <T> ok(data: T): Data<T> = Data(
-            data = data
+            data = data,
+            errors = null
         )
 
         /** Create a new unsuccessful data response with 1 error */
@@ -46,7 +47,7 @@ data class Data<T>(
     /** Create a new data and add a new error */
     fun error(msg: String): Data<T> = Data(
         data = data,
-        errors = errors + listOf(msg)
+        errors = errors ?: listOf<String>() + listOf(msg)
     )
 
 }

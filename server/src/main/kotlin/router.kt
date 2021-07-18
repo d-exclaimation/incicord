@@ -14,7 +14,7 @@ import io.javalin.apibuilder.ApiBuilder.*
  */
 fun Service.router() {
     app.routes {
-        path("incident") {
+        path("incidents") {
             get("/all", controller::getLatest)
             post("/create", controller::createIncident)
         }

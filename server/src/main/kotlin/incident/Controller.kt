@@ -9,9 +9,12 @@ package incident
 import database.Incidents
 import database.Repo
 import database.schema.Incident
+import database.schema.IncidentDTO
 import io.javalin.http.Context
 import json.Data
 import json.pipe
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import java.lang.Integer.min
 
@@ -50,5 +53,22 @@ class Controller(val repo: Repo) {
      * @return`Incident`
      */
     fun createIncident(ctx: Context) {
+        val body = ctx.body<IncidentDTO>()
+        repo
+            .contract {
+                val id = Incidents.insert {
+                    it[name] = body.name
+                    it[lastOccurred] = body.lastOccurred
+                    it[severity] = body.severity
+                } get Incidents.id
+
+                Incidents
+                    .select { Incidents.id eq id }
+                    .limit(1)
+                    .first()
+                    .pipe(Incident::parsed)
+            }
+            .pipe { Data.ok(it) }
+            .pipe { ctx.json(it) }
     }
 }
