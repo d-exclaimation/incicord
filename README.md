@@ -23,7 +23,7 @@ Insert gif or link to demo
 #### Get all items
 
 ```js
-await fetch(".../v1/incidents/all?limit=${limit}", {
+await fetch(`.../v1/incidents/all?limit=${limit}`, {
   method: "GET",
   cache: "default",
   mode: "cors",
@@ -43,7 +43,7 @@ await fetch(".../v1/incidents/create", {
   mode: "cors",
   headers: {
     "Content-Type": "application/json",
-    "X-Authorization-Token" : api_key
+    "X-Authorization-Token" : apiKey
   },
   redirect: "follow",
   body: JSON.stringify({
@@ -56,7 +56,7 @@ await fetch(".../v1/incidents/create", {
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `api_key`      | `string` | **Required**. API Key |
+| `apiKey`      | `string` | **Required**. API Key |
 | `name`      | `string` | **Required**. Name of the incident |
 | `date`      | `string` | **Required**. Date of last occurrence |
 | `severity`      | `string` | **Required**. Severity type (none, calm, mild, severe) |
