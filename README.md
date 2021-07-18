@@ -37,7 +37,7 @@ await fetch(".../v1/incidents/all?limit=${limit}", {
 
 #### Create a new item
 
-```http
+```js
 await fetch(".../v1/incidents/create", {
   method: "POST",
   mode: "cors",
