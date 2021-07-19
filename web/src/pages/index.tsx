@@ -18,11 +18,7 @@ import { createIncident } from "../models/Incident";
 const TEMPLATE_DTO = JSON.stringify(
   createIncident({
     name: "Drinking coffee",
-    last_occurred: new Date(),
-    by: {
-      name: "d-exclaimation",
-      streak: 10,
-    },
+    lastOccurred: new Date(),
     severity: "mild",
   }),
   null,
