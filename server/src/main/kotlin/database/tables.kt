@@ -6,7 +6,7 @@
 //
 package database
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.*
 
 /**
  * ### Incidents SQL Table
@@ -24,3 +24,8 @@ object Incidents : Table() {
     val severity = varchar("severity", 8)
 }
 
+fun Table.selectOne(where: SqlExpressionBuilder.() -> Op<Boolean>): ResultRow? {
+    return select(where)
+        .limit(1)
+        .firstOrNull()
+}

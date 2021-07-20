@@ -18,5 +18,10 @@ fun Service.router() {
             get("/all", controller::getLatest)
             post("/create", controller::createIncident)
         }
+
+        ws("/updates") {
+            it.onConnect(controller::joinEvent)
+            it.onClose(controller::closeEvent)
+        }
     }
 }

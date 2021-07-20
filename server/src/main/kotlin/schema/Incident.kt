@@ -4,7 +4,7 @@
 //
 //  Created by d-exclaimation on 8:50 PM.
 //
-package database.schema
+package schema
 
 import database.Incidents
 import org.jetbrains.exposed.sql.ResultRow

@@ -58,3 +58,12 @@ data class Data<T>(
 fun <T, K> T.pipe(transform: (T) -> K): K {
     return transform(this)
 }
+
+infix fun <T, K> T.p(fn: (T) -> K): K {
+    return fn(this)
+}
+
+fun <T> T.tap(effect: (T) -> Unit): T {
+    effect(this)
+    return this
+}

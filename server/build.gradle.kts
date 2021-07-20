@@ -19,7 +19,7 @@ object V {
     const val slf4j = "1.7.30"
     const val jackson = "2.10.5"
     const val postgresql = "42.2.0"
- }
+}
 
 dependencies {
     implementation(group = "org.jetbrains.exposed", name = "exposed-core", version = V.exposed)
@@ -29,6 +29,7 @@ dependencies {
     implementation(group = "io.javalin", name = "javalin", version = V.javalin)
     implementation(group = "org.slf4j", name = "slf4j-jdk14", version = V.slf4j)
     implementation(group = "com.fasterxml.jackson.core", name = "jackson-databind", version = V.jackson)
+    implementation(group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version = V.jackson)
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("org.postgresql:postgresql:${V.postgresql}")
