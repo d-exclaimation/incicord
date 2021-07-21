@@ -8,9 +8,9 @@ package schema
 
 import database.Incidents
 import org.jetbrains.exposed.sql.ResultRow
-import java.time.LocalDate
-import java.time.Period
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
@@ -32,7 +32,8 @@ data class Incident(
     init {
         // Computed info on initializer
         val date = ZonedDateTime.parse(lastOccurred)
-        val diffDays = Period.between(date.toLocalDate(), LocalDate.now())
+        val now = ZonedDateTime.now()
+        val diffDays = ChronoUnit.DAYS.between(date, now)
         val multiplier: Double = when (severity) {
             "severe" -> 2.0
             "mild" -> 1.5
@@ -40,8 +41,8 @@ data class Incident(
             else -> 1.0
         }
         info = IncidentInfo(
-            relativeDate = "${diffDays.days} days since last occurred",
-            streakColor = when ((diffDays.days / multiplier).roundToInt()) {
+            relativeDate = "$diffDays days since last occurred",
+            streakColor = when ((diffDays / multiplier).roundToInt()) {
                 in 12 until Int.MAX_VALUE -> "#00FFAE"
                 in 8 until 12 -> "#FFEA00"
                 in 4 until 8 -> "#FCB103"

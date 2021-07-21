@@ -40,20 +40,25 @@ class Controller(val repo: Repo) {
     /**
      * Fetch all incidents from the database
      * ---
-     * GET "/incident/all"
+     * GET "/incidents/all"
      * - limit: `Int`
      * @return `List<Incident>`
      */
     fun getLatest(ctx: Context) {
-        val limit = min((ctx.queryParam("limit") ?: "10").toInt(), 40)
-        repo
-            .contract {
-                Incidents
-                    .selectAll()
-                    .limit(limit)
-                    .sortedByDescending { it[Incidents.lastOccurred] }
-                    .map(Incident::parsed)
-            }
+        val rawLimit = (ctx.queryParam("limit") ?: "10").toIntOrNull()
+            ?: return ctx
+                .error("Invalid limit given", 400)
+        val limit = min(rawLimit, 40)
+
+        val result = repo.contract {
+            Incidents
+                .selectAll()
+                .limit(limit)
+                .sortedByDescending { it[Incidents.lastOccurred] }
+                .map(Incident::parsed)
+        }
+
+        result
             .pipe { Data.ok(it) }
             .pipe { ctx.json(it) }
     }
@@ -61,7 +66,7 @@ class Controller(val repo: Repo) {
     /**
      * Create a new incident from the database
      * ---
-     * POST "/incident/create"
+     * POST "/incidents/create"
      * - body: `IncidentDTO`
      * @return`Incident`
      */
@@ -87,6 +92,14 @@ class Controller(val repo: Repo) {
             .pipe { ctx.json(it) }
     }
 
+    /**
+     * Update incident record information
+     * ---
+     * PUT "/incidents/update"
+     * - id: `Int`
+     * - body: `IncidentDTO`
+     * @return `Incident`
+     */
     fun updateIncident(ctx: Context) {
         val id = ctx.queryParam("id")?.toIntOrNull()
             ?: return ctx
@@ -113,6 +126,13 @@ class Controller(val repo: Repo) {
             .pipe { ctx.json(it) }
     }
 
+    /**
+     * Reset last occurred
+     * ---
+     * PATCH "/incidents/reset"
+     * - id: `Int`
+     * @return `Incident`
+     */
     fun resetLastOccurred(ctx: Context) {
         val id = ctx.queryParam("id")?.toIntOrNull()
             ?: return ctx

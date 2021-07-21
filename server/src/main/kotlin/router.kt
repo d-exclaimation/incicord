@@ -17,6 +17,8 @@ fun Service.router() {
         path("incidents") {
             get("/all", controller::getLatest)
             post("/create", controller::createIncident)
+            put("/update", controller::updateIncident)
+            patch("/reset", controller::resetLastOccurred)
         }
 
         ws("/updates") {
