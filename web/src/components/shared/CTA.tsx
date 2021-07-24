@@ -24,7 +24,7 @@ export const CTA: React.FC = () => (
 
     <ChakraLink
       isExternal
-      href="https://github.com/d-exclaimation"
+      href="https://github.com/d-exclaimation/incicord"
       flexGrow={3}
       mx={2}
     >
