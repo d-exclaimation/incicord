@@ -13,15 +13,22 @@ import io.javalin.Javalin
  *
  * Holds the Javalin app and the callbacks
  */
-class Service(val controller: Controller) {
-    val app: Javalin = Javalin.create()
+class Service(
+    val controller: Controller,
+    corsEndpoints: List<String> = listOf()
+) {
+    val app: Javalin = Javalin
+        .create()
     private val port: Int = port()
+
 
     init {
         // Add Simple Event logging
         app.events { event ->
             event.serverStopped { println("Server shutting down") }
         }
+
+        corsEndpoints.forEach(app.config::enableCorsForOrigin)
 
         // Set the router
         router()
