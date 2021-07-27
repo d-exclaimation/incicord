@@ -4,7 +4,7 @@ import React from "react";
 const Container: React.FC<FlexProps> = (props) => {
   const { colorMode } = useColorMode();
 
-  const bgColor = { light: "gray.50", dark: "gray.900" };
+  const bgColor = { light: "gray.100", dark: "gray.900" };
 
   const color = { light: "black", dark: "white" };
   return (

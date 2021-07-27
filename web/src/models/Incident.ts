@@ -6,6 +6,7 @@
 //
 
 export type Incident = {
+  id: number;
   name: string;
   lastOccurred: Date;
   severity: IncidentSeverity;
@@ -33,7 +34,7 @@ type IncidentDTOOptions = Omit<IncidentDTO, "lastOccurred"> & {
   lastOccurred: Date;
 };
 
-export const parseIncident = (json: RIncident): Incident => ({
+export const NewIncident = (json: RIncident): Incident => ({
   ...json,
   lastOccurred: new Date(json.lastOccurred),
 });
