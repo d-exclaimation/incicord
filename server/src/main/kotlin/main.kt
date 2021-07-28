@@ -6,12 +6,12 @@
 //
 import database.Incidents
 import database.Repo
-import incident.Controller
+import incident.V1Controller
 import schema.VXController
 
 fun main() {
     val database = Repo(tables = listOf(Incidents))
-    val v1 = Controller(repo = database)
+    val v1 = V1Controller(repo = database)
     Service(
         controller = object : ControllersObject {
             override val v1: VXController = v1

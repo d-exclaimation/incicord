@@ -5,7 +5,6 @@
 //  Created by d-exclaimation on 8:50 PM.
 //
 import config.port
-import incident.Controller
 import io.javalin.Javalin
 import schema.VXController
 

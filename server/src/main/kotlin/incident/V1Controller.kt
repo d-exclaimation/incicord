@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * Holds all of the route handlers
  */
-class Controller(val repo: Repo): VXController {
+class V1Controller(val repo: Repo): VXController {
     private val listeners: ConcurrentHashMap<WsContext, Cognizance> = ConcurrentHashMap()
 
     /**
