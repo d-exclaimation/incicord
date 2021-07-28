@@ -11,14 +11,16 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
 import { DarkModeSwitch } from "./DarkModeSwitch";
 
 const NavBar: React.FC = () => {
+  const bg = useColorModeValue("gray.50", "gray.700");
   return (
-    <Flex justifyContent="space-between" p="1rem">
+    <Flex justifyContent="space-between" bg={bg} p="1rem" zIndex="10">
       <Breadcrumb
         spacing="8px"
         separator={<ChevronRightIcon color="gray.500" />}

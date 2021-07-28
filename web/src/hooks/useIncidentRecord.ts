@@ -4,14 +4,17 @@
 //
 //  Created by d-exclaimation on 15:16.
 //
-
 import { useReducer } from "react";
+import { Incident, NewIncident, RIncident } from "../models/Incident";
 import { useSnapshotInstance } from "../snapshot";
-import { Incident, NewIncident, RIncident } from "./../models/Incident";
+import { ws } from "./../constants/uri";
 
-export function useIncidentState(url: string, initial: Incident[] = []) {
-  const [state, dispatch] = useReducer(incidentReducer, initial);
-  const reconnect = useSnapshotInstance<RIncident, RIncident, RIncident>(url, {
+export function useIncidentRecord(initial: Incident[] = []) {
+  const [state, dispatch] = useReducer(
+    incidentReducer,
+    initial.sort((x, y) => (x.lastOccurred <= y.lastOccurred ? 1 : -1))
+  );
+  const reconnect = useSnapshotInstance<RIncident, RIncident, RIncident>(ws, {
     creation: (x) => dispatch({ type: "create", payload: NewIncident(x) }),
     mutation: (x) => dispatch({ type: "update", payload: NewIncident(x) }),
     deletion: (x) => dispatch({ type: "delete", payload: NewIncident(x) }),
@@ -35,7 +38,7 @@ export function incidentReducer(
   switch (actions.type) {
     case "create":
       return [...state, actions.payload].sort((x, y) =>
-        x.lastOccurred <= y.lastOccurred ? -1 : 1
+        x.lastOccurred <= y.lastOccurred ? 1 : -1
       );
     case "update":
       return state.map((x) =>

@@ -9,9 +9,10 @@ import { SimpleGrid } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import React, { useMemo } from "react";
 import IncidentView from "../components/record/IncidentView";
-import NavBar from "../components/shared/NavBar";
+import MetaHead from "../components/shared/meta/MetaHead";
 import Main from "../components/shared/semantic/Main";
 import { initialFetch } from "../data/initialFetch";
+import { useIncidentRecord } from "../hooks/useIncidentRecord";
 import { NewIncident, RIncident } from "../models/Incident";
 
 type Props = {
@@ -20,21 +21,20 @@ type Props = {
 
 const Record: React.FC<Props> = ({ data }) => {
   const database = useMemo(() => data.map(NewIncident), [JSON.stringify(data)]);
+  const { state } = useIncidentRecord(database);
   return (
-    <>
-      <NavBar />
-      <Main>
-        <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
-          spacing="3vmin"
-          m="3vmin"
-        >
-          {database.map((x) => (
-            <IncidentView key={x.id} data={x} />
-          ))}
-        </SimpleGrid>
-      </Main>
-    </>
+    <Main>
+      <MetaHead title="Incidents Record" description="All the incidents" />
+      <SimpleGrid
+        columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
+        spacing="3vmin"
+        m="3vmin"
+      >
+        {state.map((x) => (
+          <IncidentView key={x.id} data={x} />
+        ))}
+      </SimpleGrid>
+    </Main>
   );
 };
 

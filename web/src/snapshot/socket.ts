@@ -25,8 +25,8 @@ export class SocketClient<
       if (!this.websocket) return;
       this.messageHandler = (ev: MessageEvent<string>) => {
         const raw: Snapshot<C, M, D> & Cognizance = JSON.parse(ev.data);
-
-        if (raw.validation && !raw.operation) return Cognizance(ev.data);
+        console.log({ raw });
+        if (raw.timestamp && !raw.operation) return Cognizance(ev.data);
 
         const data: Snapshot<C, M, D> = Snapshot(ev.data);
         handleEvent(data, handler);

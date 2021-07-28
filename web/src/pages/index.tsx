@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import { CTA } from "../components/shared/CTA";
 import { Hero } from "../components/shared/Hero";
 import MetaHead from "../components/shared/meta/MetaHead";
-import NavBar from "../components/shared/NavBar";
 import Main from "../components/shared/semantic/Main";
 import pallete from "../constants/pallette";
 import { useResponsive } from "../hooks/useResponsive";
@@ -44,42 +43,39 @@ const Index: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <NavBar />
-      <Main>
-        <MetaHead
-          title={state}
-          description="Record and persist all your incident and count how many days since they occurred"
-        />
-        <Flex flexDir="column" alignItems="center">
-          <Hero title={state} />
-          <Flex
-            maxW="60vw"
-            shadow="md"
-            p="3"
-            boxShadow="lg"
-            borderWidth="1px"
-            borderRadius="lg"
-            overflow="hidden"
-            flexDir="column"
-            alignItems="center"
-          >
-            <Heading fontSize="2.5vmin" my="3">
-              Create a new incident to a record by making the API request
-            </Heading>
-            <Flex flexDir={isPortrait ? "column" : "row"} maxW="100%">
-              <Text maxW={snippetSize} className={colorMode} border={border}>
-                <pre>{TEMPLATE_DTO}</pre>
-              </Text>
-              <Text maxW={snippetSize} border={border} className={colorMode}>
-                <pre>{API_REQUEST}</pre>
-              </Text>
-            </Flex>
+    <Main>
+      <MetaHead
+        title={state}
+        description="Record and persist all your incident and count how many days since they occurred"
+      />
+      <Flex flexDir="column" alignItems="center">
+        <Hero title={state} />
+        <Flex
+          maxW="60vw"
+          shadow="md"
+          p="3"
+          boxShadow="lg"
+          borderWidth="1px"
+          borderRadius="lg"
+          overflow="hidden"
+          flexDir="column"
+          alignItems="center"
+        >
+          <Heading fontSize="2.5vmin" my="3">
+            Create a new incident to a record by making the API request
+          </Heading>
+          <Flex flexDir={isPortrait ? "column" : "row"} maxW="100%">
+            <Text maxW={snippetSize} className={colorMode} border={border}>
+              <pre>{TEMPLATE_DTO}</pre>
+            </Text>
+            <Text maxW={snippetSize} border={border} className={colorMode}>
+              <pre>{API_REQUEST}</pre>
+            </Text>
           </Flex>
         </Flex>
-        <CTA />
-      </Main>
-    </>
+      </Flex>
+      <CTA />
+    </Main>
   );
 };
 

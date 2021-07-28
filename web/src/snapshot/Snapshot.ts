@@ -38,7 +38,7 @@ export function handleEvent<
     case "deletion":
       return handler.deletion(snap.payload);
     default:
-      throw new Error("Wtf");
+      console.log("Not snapshot given");
   }
 }
 
