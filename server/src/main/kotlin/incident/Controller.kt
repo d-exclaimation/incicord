@@ -168,7 +168,6 @@ class Controller(val repo: Repo) {
             else
                 Cognizance.valid.tap { listeners[ctx] = it }
         res
-            .pipe { Data.ok(it) }
             .pipe { ctx.send(it) }
     }
 
@@ -181,7 +180,6 @@ class Controller(val repo: Repo) {
     fun closeEvent(ctx: WsCloseContext) {
         (listeners[ctx] ?: Cognizance.invalid)
             .tap { listeners.remove(ctx) }
-            .pipe { Data.ok(it) }
             .pipe { ctx.send(it) }
     }
 
