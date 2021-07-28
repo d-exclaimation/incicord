@@ -20,10 +20,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
-import schema.Cognizance
-import schema.Incident
-import schema.IncidentDTO
-import schema.Snapshot
+import schema.*
 import java.lang.Integer.min
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -35,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * Holds all of the route handlers
  */
-class Controller(val repo: Repo) {
+class Controller(val repo: Repo): VXController {
     private val listeners: ConcurrentHashMap<WsContext, Cognizance> = ConcurrentHashMap()
 
     /**
@@ -45,7 +42,7 @@ class Controller(val repo: Repo) {
      * - limit: `Int`
      * @return `List<Incident>`
      */
-    fun getLatest(ctx: Context) {
+    override fun getLatest(ctx: Context) {
         val qLimit = (ctx.queryParam("limit") ?: "10").toIntOrNull()
             ?: return ctx
                 .error("Invalid limit given", 400)
@@ -71,7 +68,7 @@ class Controller(val repo: Repo) {
      * - body: `IncidentDTO`
      * @return`Incident`
      */
-    fun createIncident(ctx: Context) {
+    override fun createIncident(ctx: Context) {
         val body = ctx.body<IncidentDTO>()
 
         val result = repo.contract {
@@ -101,7 +98,7 @@ class Controller(val repo: Repo) {
      * - body: `IncidentDTO`
      * @return `Incident`
      */
-    fun updateIncident(ctx: Context) {
+    override fun updateIncident(ctx: Context) {
         val id = ctx.queryParam("id")?.toIntOrNull()
             ?: return ctx
                 .error("No id given")
@@ -134,7 +131,7 @@ class Controller(val repo: Repo) {
      * - id: `Int`
      * @return `Incident`
      */
-    fun resetLastOccurred(ctx: Context) {
+    override fun resetLastOccurred(ctx: Context) {
         val id = ctx.queryParam("id")?.toIntOrNull()
             ?: return ctx
                 .error("No id given")
@@ -165,7 +162,7 @@ class Controller(val repo: Repo) {
      * - `id`: `Int`
      * @return `Cognizance`
      */
-    fun deleteRecord(ctx: Context) {
+    override fun deleteRecord(ctx: Context) {
         val id = ctx.queryParam("id")?.toIntOrNull()
             ?: return ctx
                 .error("No id given")
@@ -195,7 +192,7 @@ class Controller(val repo: Repo) {
      * WS "/updates"
      * @return `Cognizance`
      */
-    fun joinEvent(ctx: WsConnectContext) {
+    override fun joinEvent(ctx: WsConnectContext) {
         val res =
             if (listeners.contains(ctx))
                 Cognizance.invalid
@@ -211,7 +208,7 @@ class Controller(val repo: Repo) {
      * WS "/updates"
      * @return `Cognizance`
      */
-    fun closeEvent(ctx: WsCloseContext) {
+    override fun closeEvent(ctx: WsCloseContext) {
         (listeners[ctx] ?: Cognizance.invalid)
             .tap { listeners.remove(ctx) }
             .pipe(ctx::send)

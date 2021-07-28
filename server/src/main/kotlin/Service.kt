@@ -7,6 +7,7 @@
 import config.port
 import incident.Controller
 import io.javalin.Javalin
+import schema.VXController
 
 /**
  * ### Javalin Service
@@ -14,7 +15,7 @@ import io.javalin.Javalin
  * Holds the Javalin app and the callbacks
  */
 class Service(
-    val controller: Controller,
+    val controller: ControllersObject,
     corsEndpoints: List<String> = listOf()
 ) {
     val app: Javalin = Javalin
@@ -41,4 +42,14 @@ class Service(
      * Start the AppServer
      */
     fun start(): Javalin? = app.start(port)
+}
+
+/**
+ * Controllers Object Interface
+ */
+interface ControllersObject {
+    /**
+     * Version 1 Controller
+     */
+    val v1: VXController
 }

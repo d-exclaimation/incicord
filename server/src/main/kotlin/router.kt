@@ -14,17 +14,19 @@ import io.javalin.apibuilder.ApiBuilder.*
  */
 fun Service.router() {
     app.routes {
-        path("incidents") {
-            get("/all", controller::getLatest)
-            post("/create", controller::createIncident)
-            put("/update", controller::updateIncident)
-            patch("/reset", controller::resetLastOccurred)
-            delete("/delete", controller::deleteRecord)
-        }
+        path("v1") {
+            path("incidents") {
+                get("/all", controller.v1::getLatest)
+                post("/create", controller.v1::createIncident)
+                put("/update", controller.v1::updateIncident)
+                patch("/reset", controller.v1::resetLastOccurred)
+                delete("/delete", controller.v1::deleteRecord)
+            }
 
-        ws("/updates") {
-            it.onConnect(controller::joinEvent)
-            it.onClose(controller::closeEvent)
+            ws("/updates") {
+                it.onConnect(controller.v1::joinEvent)
+                it.onClose(controller.v1::closeEvent)
+            }
         }
     }
 }
