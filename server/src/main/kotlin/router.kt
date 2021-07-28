@@ -19,6 +19,7 @@ fun Service.router() {
             post("/create", controller::createIncident)
             put("/update", controller::updateIncident)
             patch("/reset", controller::resetLastOccurred)
+            delete("/delete", controller::deleteRecord)
         }
 
         ws("/updates") {

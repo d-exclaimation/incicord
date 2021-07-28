@@ -16,6 +16,7 @@ import io.javalin.websocket.WsContext
 import json.Data
 import json.pipe
 import json.tap
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -45,10 +46,10 @@ class Controller(val repo: Repo) {
      * @return `List<Incident>`
      */
     fun getLatest(ctx: Context) {
-        val rawLimit = (ctx.queryParam("limit") ?: "10").toIntOrNull()
+        val qLimit = (ctx.queryParam("limit") ?: "10").toIntOrNull()
             ?: return ctx
                 .error("Invalid limit given", 400)
-        val limit = min(rawLimit, 40)
+        val limit = min(qLimit, 40)
 
         val result = repo.contract {
             Incidents
@@ -59,8 +60,8 @@ class Controller(val repo: Repo) {
         }
 
         result
-            .pipe { Data.ok(it) }
-            .pipe { ctx.json(it) }
+            .pipe(Data.Companion::ok)
+            .pipe(ctx::json)
     }
 
     /**
@@ -88,8 +89,8 @@ class Controller(val repo: Repo) {
 
         result
             .tap { broadcast(Snapshot.creation(it)) }
-            .pipe { Data.ok(it) }
-            .pipe { ctx.json(it) }
+            .pipe(Data.Companion::ok)
+            .pipe(ctx::json)
     }
 
     /**
@@ -122,8 +123,8 @@ class Controller(val repo: Repo) {
 
         result
             .tap { broadcast(Snapshot.mutation(it)) }
-            .pipe { Data.ok(it) }
-            .pipe { ctx.json(it) }
+            .pipe(Data.Companion::ok)
+            .pipe(ctx::json)
     }
 
     /**
@@ -140,7 +141,9 @@ class Controller(val repo: Repo) {
 
         val result = repo.contract {
             Incidents.update({ Incidents.id eq id }) {
-                it[lastOccurred] = ZonedDateTime.now(ZoneId.ofOffset("", ZoneOffset.UTC)).toString()
+                it[lastOccurred] = ZonedDateTime.now(
+                    ZoneId.ofOffset("", ZoneOffset.UTC)
+                ).toString()
             }
 
             Incidents
@@ -151,8 +154,39 @@ class Controller(val repo: Repo) {
 
         result
             .tap { broadcast(Snapshot.mutation(it)) }
-            .pipe { Data.ok(it) }
-            .pipe { ctx.json(it) }
+            .pipe(Data.Companion::ok)
+            .pipe(ctx::json)
+    }
+
+    /**
+     * Delete a record
+     * ---
+     * DELETE "/incidents/delete"
+     * - `id`: `Int`
+     * @return `Cognizance`
+     */
+    fun deleteRecord(ctx: Context) {
+        val id = ctx.queryParam("id")?.toIntOrNull()
+            ?: return ctx
+                .error("No id given")
+
+        val result = repo.contract {
+            val incident = Incidents
+                .selectOne { Incidents.id eq id }
+                ?.pipe(Incident::parsed)
+            if (incident == null) {
+                null
+            } else {
+                Incidents.deleteWhere { Incidents.id eq incident.id }
+                incident
+            }
+        } ?: return ctx
+            .error("Cannot find record", 404)
+
+        result
+            .tap { broadcast(Snapshot.deletion(it)) }
+            .pipe(Data.Companion::ok)
+            .pipe(ctx::json)
     }
 
     /**
@@ -168,7 +202,7 @@ class Controller(val repo: Repo) {
             else
                 Cognizance.valid.tap { listeners[ctx] = it }
         res
-            .pipe { ctx.send(it) }
+            .pipe(ctx::send)
     }
 
     /**
@@ -180,7 +214,7 @@ class Controller(val repo: Repo) {
     fun closeEvent(ctx: WsCloseContext) {
         (listeners[ctx] ?: Cognizance.invalid)
             .tap { listeners.remove(ctx) }
-            .pipe { ctx.send(it) }
+            .pipe(ctx::send)
     }
 
     /**
@@ -201,5 +235,5 @@ private fun Context.error(msg: String, status: Int = 400) {
     Data
         .error(msg)
         .tap { this.status(status) }
-        .pipe { this.json(it) }
+        .pipe(this::json)
 }

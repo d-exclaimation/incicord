@@ -47,10 +47,11 @@ data class Data<T>(
     /** Create a new data and add a new error */
     fun error(msg: String): Data<T> = Data(
         data = data,
-        errors = errors ?: listOf<String>() + listOf(msg)
+        errors = (errors ?: listOf()) + listOf(msg)
     )
 
 }
+
 
 /**
  * Apply function to continue piping with functions
