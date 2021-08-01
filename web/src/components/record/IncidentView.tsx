@@ -5,15 +5,19 @@
 //  Created by d-exclaimation on 17:35.
 //
 
+import { CloseIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Box,
   Flex,
+  IconButton,
   Text,
   useBreakpointValue,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import React from "react";
+import { deleteRecord } from "../../data/deleteRecord";
 import { Incident, IncidentSeverity } from "../../models/Incident";
 
 type Props = {
@@ -41,6 +45,7 @@ type ColorScheme =
   | "telegram";
 
 const IncidentView: React.FC<Props> = ({ data }) => {
+  const toast = useToast();
   const opt = useColorModeValue(
     { bg: "gray.50", shadow: "lg", fontColor: "black" },
     { bg: "gray.800", shadow: "dark-lg", fontColor: "#fafafa" }
@@ -63,7 +68,7 @@ const IncidentView: React.FC<Props> = ({ data }) => {
     base: "90vw",
     sm: "45vw",
     md: "45vw",
-    lg: "45vw",
+    lg: "30vw",
     xl: "30vw",
   });
   return (
@@ -78,7 +83,7 @@ const IncidentView: React.FC<Props> = ({ data }) => {
     >
       <Box w="20px" bg={data.info.streakColor} objectFit="cover" />
 
-      <Box alignItems="center" p="3" m={5}>
+      <Box alignItems="center" p="3" m={5} mr="auto">
         <Box
           mt="1"
           fontWeight="semibold"
@@ -100,6 +105,35 @@ const IncidentView: React.FC<Props> = ({ data }) => {
           {data.info.relativeDate}
         </Text>
       </Box>
+      <Flex m={3}>
+        <IconButton
+          colorScheme="teal"
+          aria-label="delete-post"
+          size="sm"
+          variant="ghost"
+          onClick={async () => {
+            const result = await deleteRecord(data.id);
+            if (result.errors) {
+              toast({
+                title: "Fail to delete data",
+                description: `Reasoning: ${result.errors.join(", ")}`,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            } else {
+              toast({
+                title: `Successfully deleted "${result.data.name}"`,
+                description: `Record of id: ${result.data.id} is deleted`,
+                status: "success",
+                duration: 2000,
+                isClosable: true,
+              });
+            }
+          }}
+          icon={<CloseIcon />}
+        />
+      </Flex>
     </Flex>
   );
 };

@@ -4,7 +4,7 @@
 //
 //  Created by d-exclaimation on 16:27.
 //
-import { uri } from "./../constants/uri";
+import { uri, ver } from "./../constants/uri";
 import { Data } from "./../models/Data";
 import { RIncident } from "./../models/Incident";
 
@@ -12,7 +12,7 @@ export const initialFetch = async (
   limit: number = 10
 ): Promise<Data<RIncident[]>> => {
   try {
-    const resp = await fetch(`${uri}/incidents/all?limit=${limit}`, {
+    const resp = await fetch(`${uri}/${ver}/incidents/all?limit=${limit}`, {
       method: "GET",
       credentials: "include",
     });

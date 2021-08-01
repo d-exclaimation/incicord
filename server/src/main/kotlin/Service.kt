@@ -18,7 +18,9 @@ class Service(
     corsEndpoints: List<String> = listOf()
 ) {
     val app: Javalin = Javalin
-        .create()
+        .create {
+            corsEndpoints.forEach(it::enableCorsForOrigin)
+        }
     private val port: Int = port()
 
 
@@ -27,8 +29,6 @@ class Service(
         app.events { event ->
             event.serverStopped { println("Server shutting down") }
         }
-
-        corsEndpoints.forEach(app.config::enableCorsForOrigin)
 
         // Set the router
         router()
