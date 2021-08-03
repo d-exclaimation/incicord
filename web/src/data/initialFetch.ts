@@ -15,6 +15,7 @@ export const initialFetch = async (
     const resp = await fetch(`${uri}/${ver}/incidents/all?limit=${limit}`, {
       method: "GET",
       credentials: "include",
+      cache: "default",
     });
     const res: Data<RIncident[]> = await resp.json();
 

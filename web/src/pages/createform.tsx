@@ -15,28 +15,55 @@ import {
   Select,
   Stack,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
+import { useRouter } from "next/dist/client/router";
 import React, { useCallback, useState } from "react";
 import Main from "../components/shared/semantic/Main";
+import { createRecord } from "../data/createRecord";
 import { createIncident } from "../models/Incident";
+import { enqueue } from "../utils/enqueue";
 
 type Severity = "none" | "calm" | "mild" | "severe";
 
 const Createform: React.FC = () => {
+  const router = useRouter();
+  const toast = useToast();
   const [name, setName] = useState("");
   const [severity, setSeverity] = useState<Severity>("mild");
   const [lastOccurred, setLastOccurred] = useState(new Date());
-  const onSubmit = useCallback(() => {
-    console.log(
+  const onSubmit = useCallback(async () => {
+    const res = await createRecord(
       createIncident({
         name,
         lastOccurred,
         severity,
       })
     );
-    setName("");
-    setSeverity("mild");
-    setLastOccurred(new Date());
+
+    if (res.data) {
+      toast({
+        title: "Successfully created record",
+        description: `Record of "${res.data.name}" has been created`,
+        duration: 5000,
+        isClosable: true,
+        status: "success",
+        onCloseComplete: () => enqueue(() => router.push("/record")),
+      });
+      setName("");
+      setSeverity("mild");
+      setLastOccurred(new Date());
+      return;
+    }
+    if (res.errors) {
+      toast({
+        title: "Failed to create record",
+        description: `Reasons: ${res.errors.map((x) => `"${x}"`).join(", ")}`,
+        duration: 5000,
+        status: "error",
+        isClosable: true,
+      });
+    }
   }, [name, severity, lastOccurred]);
 
   // Color mode config
