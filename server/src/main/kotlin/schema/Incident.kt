@@ -75,10 +75,10 @@ data class IncidentInfo(
 )
 
 /**
- * ### Incident Data Transfer Object
+ * ### Incident Input
  * Data class for Input for Incident
  */
-data class IncidentDTO(
+data class IncidentInput(
     val name: String,
     val lastOccurred: String,
     var severity: String

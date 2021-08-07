@@ -7,7 +7,7 @@
 package json
 
 /**
- * ### Data Response Wrapper
+ * ### Data Transfer Object
  *
  * For return JSON in form of
  * ```json
@@ -19,51 +19,42 @@ package json
  * }
  * ```
  */
-data class Data<T>(
+data class DTO<T>(
     val data: T?,
-    val errors: List<String>? = null
+    val errors: Collection<String>? = null
 ) {
     companion object {
 
         /** Create a new successful data response */
-        fun <T> ok(data: T): Data<T> = Data(
+        fun <T> ok(data: T): DTO<T> = DTO(
             data = data,
             errors = null
         )
 
         /** Create a new unsuccessful data response with 1 error */
-        fun error(msg: String): Data<Any> = Data(
+        fun error(msg: String): DTO<Any> = DTO(
             data = null,
             errors = listOf(msg)
         )
 
         /** Create a new unsuccessful data response with many errors */
-        fun errors(errors: List<String>): Data<Any> = Data(
+        fun errors(errors: Collection<String>): DTO<Any> = DTO(
             data = null,
             errors = errors
         )
     }
 
     /** Create a new data and add a new error */
-    fun error(msg: String): Data<T> = Data(
+    fun error(msg: String): DTO<T> = DTO(
         data = data,
-        errors = (errors ?: listOf()) + listOf(msg)
+        errors = errors?.let { it + listOf(msg) }
     )
 
 }
 
-
 /**
  * Apply function to continue piping with functions
  */
-fun <T, K> T.pipe(transform: (T) -> K): K {
-    return transform(this)
-}
-
-infix fun <T, K> T.p(fn: (T) -> K): K {
-    return fn(this)
-}
-
 fun <T> T.tap(effect: (T) -> Unit): T {
     effect(this)
     return this

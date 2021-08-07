@@ -13,8 +13,7 @@ import io.javalin.http.Context
 import io.javalin.websocket.WsCloseContext
 import io.javalin.websocket.WsConnectContext
 import io.javalin.websocket.WsContext
-import json.Data
-import json.pipe
+import json.DTO
 import json.tap
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -32,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * Holds all of the route handlers
  */
-class V1Controller(val repo: Repo): VXController {
+class V1Controller(val repo: Repo) : VXController {
     private val listeners: ConcurrentHashMap<WsContext, Cognizance> = ConcurrentHashMap()
 
     /**
@@ -57,8 +56,8 @@ class V1Controller(val repo: Repo): VXController {
         }
 
         result
-            .pipe(Data.Companion::ok)
-            .pipe(ctx::json)
+            .let(DTO.Companion::ok)
+            .let(ctx::json)
     }
 
     /**
@@ -69,7 +68,7 @@ class V1Controller(val repo: Repo): VXController {
      * @return`Incident`
      */
     override fun createIncident(ctx: Context) {
-        val body = ctx.body<IncidentDTO>()
+        val body = ctx.body<IncidentInput>()
 
         val result = repo.contract {
             val id = Incidents.insert {
@@ -80,14 +79,14 @@ class V1Controller(val repo: Repo): VXController {
 
             Incidents
                 .selectOne { Incidents.id eq id }
-                ?.pipe(Incident::parsed)
+                ?.let(Incident::parsed)
         } ?: return ctx
             .error("Failed on creation", 500)
 
         result
             .tap { broadcast(Snapshot.creation(it)) }
-            .pipe(Data.Companion::ok)
-            .pipe(ctx::json)
+            .let(DTO.Companion::ok)
+            .let(ctx::json)
     }
 
     /**
@@ -103,7 +102,7 @@ class V1Controller(val repo: Repo): VXController {
             ?: return ctx
                 .error("No id given")
 
-        val body = ctx.body<IncidentDTO>()
+        val body = ctx.body<IncidentInput>()
 
         val result = repo.contract {
             Incidents.update({ Incidents.id eq id }) {
@@ -114,14 +113,14 @@ class V1Controller(val repo: Repo): VXController {
 
             Incidents
                 .selectOne { Incidents.id eq id }
-                ?.pipe(Incident::parsed)
+                ?.let(Incident::parsed)
         } ?: return ctx
             .error("Cannot find record", 404)
 
         result
             .tap { broadcast(Snapshot.mutation(it)) }
-            .pipe(Data.Companion::ok)
-            .pipe(ctx::json)
+            .let(DTO.Companion::ok)
+            .let(ctx::json)
     }
 
     /**
@@ -145,14 +144,14 @@ class V1Controller(val repo: Repo): VXController {
 
             Incidents
                 .selectOne { Incidents.id eq id }
-                ?.pipe(Incident::parsed)
+                ?.let(Incident::parsed)
         } ?: return ctx
             .error("Cannot find record", 404)
 
         result
             .tap { broadcast(Snapshot.mutation(it)) }
-            .pipe(Data.Companion::ok)
-            .pipe(ctx::json)
+            .let(DTO.Companion::ok)
+            .let(ctx::json)
     }
 
     /**
@@ -170,7 +169,7 @@ class V1Controller(val repo: Repo): VXController {
         val result = repo.contract {
             val incident = Incidents
                 .selectOne { Incidents.id eq id }
-                ?.pipe(Incident::parsed)
+                ?.let(Incident::parsed)
             if (incident == null) {
                 null
             } else {
@@ -182,8 +181,8 @@ class V1Controller(val repo: Repo): VXController {
 
         result
             .tap { broadcast(Snapshot.deletion(it)) }
-            .pipe(Data.Companion::ok)
-            .pipe(ctx::json)
+            .let(DTO.Companion::ok)
+            .let(ctx::json)
     }
 
     /**
@@ -199,7 +198,7 @@ class V1Controller(val repo: Repo): VXController {
             else
                 Cognizance.valid.tap { listeners[ctx] = it }
         res
-            .pipe(ctx::send)
+            .let(ctx::send)
     }
 
     /**
@@ -211,7 +210,7 @@ class V1Controller(val repo: Repo): VXController {
     override fun closeEvent(ctx: WsCloseContext) {
         (listeners[ctx] ?: Cognizance.invalid)
             .tap { listeners.remove(ctx) }
-            .pipe(ctx::send)
+            .let(ctx::send)
     }
 
     /**
@@ -229,8 +228,7 @@ class V1Controller(val repo: Repo): VXController {
 }
 
 private fun Context.error(msg: String, status: Int = 400) {
-    Data
-        .error(msg)
+    DTO.error(msg)
         .tap { this.status(status) }
-        .pipe(this::json)
+        .let(this::json)
 }

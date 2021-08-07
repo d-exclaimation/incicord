@@ -15,7 +15,7 @@ import schema.VXController
  */
 class Service(
     val controller: ControllersObject,
-    corsEndpoints: List<String> = listOf()
+    corsEndpoints: Collection<String> = listOf()
 ) {
     val app: Javalin = Javalin
         .create {
